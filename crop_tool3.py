@@ -1,21 +1,10 @@
-"""
-self.canvas.bind("b", self.back_action)
-self.canvas.bind("f", self.next_action)
-self.canvas.bind("<space>", self.save_action)
-self.canvas.bind("g", self.backsave_action)
-self.canvas.bind("r", self.change_folder)
-self.canvas.bind("t", self.change_folder)
-self.canvas.bind("y", self.txtsave)
-"""
 import copy
 import os
 from tkinter import *
 from datetime import datetime
 
 from PIL import Image, ImageTk
-#画像があるフォルダ
-#os.chdir("/Users/hikaru/Documents/drug_eruption")
-#os.chdir("/Users/hikaru/")
+
 imagedir = "./data/"
 savedir = "./save/"
 readtxtfilename = "folder.txt"
@@ -43,7 +32,7 @@ class MainWindow():
         self.folder_num = 0
         self.current_folder = self.folders[self.folder_num]
         self.current_savefolder = self.savefolder[self.folder_num]
-        
+
         self.my_images = []
         self.file_num = 0
         self.my_images_name = []
@@ -79,22 +68,22 @@ class MainWindow():
         self.tag_line_list = ["left_line", "right_line", "top_line", "bottom_line"]
         self.color_line_list = ["green", "red", "green", "red"]
 
-        self.canvas.create_line(0, 0, 0, self.my_images[self.my_image_number].height(), 
+        self.canvas.create_line(0, 0, 0, self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[0], fill=self.color_line_list[0])
         self.canvas.create_line(self.my_images[self.my_image_number].width(), 0,
                                 self.my_images[self.my_image_number].width(), self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[1], fill=self.color_line_list[1])
         self.canvas.create_line(0, 0, self.my_images[self.my_image_number].width(), 0,
                                 tag=self.tag_line_list[2], fill=self.color_line_list[2])
-        self.canvas.create_line(0, self.my_images[self.my_image_number].height(), 
+        self.canvas.create_line(0, self.my_images[self.my_image_number].height(),
                                 self.my_images[self.my_image_number].width(), self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[3], fill=self.color_line_list[3])
 
         self.point = [0, self.my_images[self.my_image_number].width(), 0, self.my_images[self.my_image_number].height()]
-        
+
         #モードの初期設定
         self.mode = 0
-        
+
         #mode切り替えイベント
         #self.canvas.bind("<Key>", self.mode_change)
         self.canvas.bind("a", self.mode_change)
@@ -103,11 +92,11 @@ class MainWindow():
         self.canvas.bind("s", self.mode_change)
         self.canvas.focus_set()
         #self.pack()
-     
+
         #クリックされた時のカーソル移動
         #canvas内がクリックされた時のみ
         self.canvas.bind("<Button-1>", self.line_set)
-     
+
         #actions
         self.canvas.bind("b", self.back_action)
         self.canvas.bind("f", self.next_action)
@@ -116,8 +105,8 @@ class MainWindow():
         self.canvas.bind("r", self.change_folder)
         self.canvas.bind("t", self.change_folder)
         self.canvas.bind("y", self.txtsave)
-        
-     
+
+
     def get_folder(self):
         pattern = re.compile('.*[.](JPG|jpg|jpeg|png)$')
         self.my_images_name = [self.current_folder + "/" + image for image in os.listdir(self.current_folder) if re.match(pattern, image)]
@@ -182,7 +171,7 @@ class MainWindow():
         self.canvas.delete(self.tag_line_list[self.mode])
         if self.mode == 0 or self.mode == 1:
             self.point[self.mode] = event.x
-            self.canvas.create_line(event.x, 0, event.x, self.my_images[self.my_image_number].height(), 
+            self.canvas.create_line(event.x, 0, event.x, self.my_images[self.my_image_number].height(),
                                     tag=self.tag_line_list[self.mode], fill=self.color_line_list[self.mode])
         else:
             self.point[self.mode] = event.y
@@ -192,19 +181,19 @@ class MainWindow():
     def line_reset(self):
         for i in range(4):
             self.canvas.delete(self.tag_line_list[i])
-        self.canvas.create_line(0, 0, 0, self.my_images[self.my_image_number].height(), 
+        self.canvas.create_line(0, 0, 0, self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[0], fill=self.color_line_list[0])
         self.canvas.create_line(self.my_images[self.my_image_number].width(), 0,
                                 self.my_images[self.my_image_number].width(), self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[1], fill=self.color_line_list[1])
         self.canvas.create_line(0, 0, self.my_images[self.my_image_number].width(), 0,
                                 tag=self.tag_line_list[2], fill=self.color_line_list[2])
-        self.canvas.create_line(0, self.my_images[self.my_image_number].height(), 
+        self.canvas.create_line(0, self.my_images[self.my_image_number].height(),
                                 self.my_images[self.my_image_number].width(), self.my_images[self.my_image_number].height(),
                                 tag=self.tag_line_list[3], fill=self.color_line_list[3])
 
         self.point = [0, self.my_images[self.my_image_number].width(), 0, self.my_images[self.my_image_number].height()]
-        
+
         self.mode = 0
 
     def back_action(self, event):
@@ -250,7 +239,7 @@ class MainWindow():
         self.message.delete(0, END)
         self.savefilename = self.current_savefolder +  "/crop_" + str(self.save_file_num) + "_" + self.my_images_default_name[self.my_image_number]
         self.message.insert(END, self.savefilename)
-        
+
     def save_action(self, event):
         # 表示画像を取り込み
         self.temp_image = Image.open(self.my_images_name[self.my_image_number])
